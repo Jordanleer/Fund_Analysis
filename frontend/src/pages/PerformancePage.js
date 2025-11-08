@@ -71,6 +71,14 @@ function PerformancePage() {
         </button>
         <h1>Performance Analysis</h1>
         <h2 className="fund-name">{fundName}</h2>
+        <div className="nav-buttons">
+          <button
+            onClick={() => navigate(`/fund/${fundId}/risk`)}
+            className="nav-button"
+          >
+            ⚠️ Risk Analysis
+          </button>
+        </div>
       </div>
 
       <div className="performance-content">

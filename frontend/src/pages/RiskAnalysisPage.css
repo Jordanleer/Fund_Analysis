@@ -1,4 +1,4 @@
-.performance-page {
+.risk-analysis-page {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
@@ -6,8 +6,8 @@
   background: #f5f6fa;
 }
 
-.performance-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.risk-header {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   color: white;
   padding: 30px;
   border-radius: 10px;
@@ -15,13 +15,13 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.performance-header h1 {
+.risk-header h1 {
   margin: 10px 0;
   font-size: 32px;
 }
 
-.performance-header .fund-name {
-  margin: 10px 0 0 0;
+.risk-header .fund-name {
+  margin: 10px 0 15px 0;
   font-size: 20px;
   opacity: 0.95;
   font-weight: normal;
@@ -63,19 +63,13 @@
 
 .nav-button:hover {
   background: white;
-  color: #764ba2;
+  color: #c0392b;
   transform: translateY(-2px);
 }
 
-.performance-content {
+.risk-content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-}
-
-.performance-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 30px;
 }
 
@@ -95,10 +89,4 @@
 
 .error {
   color: #e74c3c;
-}
-
-@media (max-width: 1024px) {
-  .performance-grid {
-    grid-template-columns: 1fr;
-  }
 }
