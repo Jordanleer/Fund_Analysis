@@ -1,11 +1,18 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional, List
+from pydantic import BaseModel
 import pandas as pd
 from app.storage import DataStore
 from app.api.dependencies import require_data
 from app.utils.calculations import PerformanceCalculator
 
 router = APIRouter()
+
+
+class MultipleReturnsRequest(BaseModel):
+    fund_ids: List[int]
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
 
 
 @router.get("/returns/{fund_id}", dependencies=[Depends(require_data)])
@@ -64,18 +71,12 @@ async def get_returns(
 
 
 @router.post("/returns/multiple", dependencies=[Depends(require_data)])
-async def get_multiple_returns(
-    fund_ids: List[int],
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-):
+async def get_multiple_returns(request: MultipleReturnsRequest):
     """
     Get returns for multiple funds
 
     Args:
-        fund_ids: List of fund IDs
-        start_date: Optional start date
-        end_date: Optional end date
+        request: Request containing fund_ids, start_date, and end_date
 
     Returns:
         Returns data for all requested funds
@@ -84,12 +85,12 @@ async def get_multiple_returns(
 
     funds_returns = []
 
-    for fund_id in fund_ids:
+    for fund_id in request.fund_ids:
         fund = data_store.get_fund_by_id(fund_id)
         if fund is None:
             continue
 
-        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
         if returns_df is None or len(returns_df) == 0:
             continue
 
@@ -113,6 +114,6 @@ async def get_multiple_returns(
 
     return {
         "funds": funds_returns,
-        "start_date": start_date,
-        "end_date": end_date
+        "start_date": request.start_date,
+        "end_date": request.end_date
     }
