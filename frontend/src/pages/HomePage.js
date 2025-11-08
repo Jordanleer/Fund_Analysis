@@ -40,6 +40,10 @@ function HomePage() {
     setDataSummary(null);
   };
 
+  const handleCompareFunds = () => {
+    navigate('/compare');
+  };
+
   return (
     <div className="home-page">
       <div className="hero-section">
@@ -82,6 +86,9 @@ function HomePage() {
           <div className="action-buttons">
             <button onClick={handleViewFunds} className="primary-button">
               View Funds
+            </button>
+            <button onClick={handleCompareFunds} className="primary-button">
+              Compare Funds
             </button>
             <button onClick={handleUploadNew} className="secondary-button">
               Upload New File
