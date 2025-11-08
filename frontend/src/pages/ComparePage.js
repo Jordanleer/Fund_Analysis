@@ -51,14 +51,21 @@ function ComparePage() {
       setCorrelationData(corrResp);
     } catch (err) {
       // Handle validation errors from FastAPI (Pydantic)
+      console.error('Comparison data error:', err);
       let errorMessage = 'Error loading comparison data';
+
       if (err.response?.data?.detail) {
         if (Array.isArray(err.response.data.detail)) {
           errorMessage = err.response.data.detail.map(e => e.msg).join(', ');
         } else if (typeof err.response.data.detail === 'string') {
           errorMessage = err.response.data.detail;
+        } else {
+          errorMessage = JSON.stringify(err.response.data.detail);
         }
+      } else if (err.message) {
+        errorMessage = err.message;
       }
+
       setError(errorMessage);
     } finally {
       setLoading(false);
