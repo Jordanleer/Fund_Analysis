@@ -41,6 +41,10 @@ function FundList() {
     navigate(`/fund/${fundId}`);
   };
 
+  const handleCompareFunds = () => {
+    navigate('/compare');
+  };
+
   if (loading) {
     return (
       <div className="fund-list-container">
@@ -60,8 +64,13 @@ function FundList() {
   return (
     <div className="fund-list-container">
       <div className="fund-list-header">
-        <h2>Fund List</h2>
-        <p className="fund-count">Total Funds: {totalFunds}</p>
+        <div>
+          <h2>Fund List</h2>
+          <p className="fund-count">Total Funds: {totalFunds}</p>
+        </div>
+        <button onClick={handleCompareFunds} className="compare-button">
+          Compare Funds
+        </button>
       </div>
 
       <form onSubmit={handleSearch} className="search-form">

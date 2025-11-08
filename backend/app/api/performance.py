@@ -196,3 +196,92 @@ async def get_drawdown_series(
         "fund_name": fund['fund_name'],
         "drawdown_series": drawdown_list
     }
+
+
+@router.post("/performance/rolling-returns", dependencies=[Depends(require_data)])
+async def get_rolling_returns(
+    fund_ids: List[int],
+    window_months: int = 12,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None
+):
+    """Get rolling returns for multiple funds"""
+    data_store = DataStore()
+
+    funds_rolling = []
+
+    for fund_id in fund_ids:
+        fund = data_store.get_fund_by_id(fund_id)
+        if fund is None:
+            continue
+
+        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        if returns_df is None or len(returns_df) == 0:
+            continue
+
+        # Calculate rolling returns
+        rolling_df = PerformanceCalculator.calculate_rolling_returns(returns_df, window_months)
+
+        rolling_list = []
+        for _, row in rolling_df.iterrows():
+            rolling_list.append({
+                'date': row['date'].strftime('%Y-%m-%d'),
+                'rolling_return': float(row['rolling_return'])
+            })
+
+        funds_rolling.append({
+            'fund_id': fund_id,
+            'fund_name': fund['fund_name'],
+            'rolling_returns': rolling_list
+        })
+
+    return {
+        "funds": funds_rolling,
+        "window_months": window_months
+    }
+
+
+@router.post("/risk/correlation-matrix", dependencies=[Depends(require_data)])
+async def get_correlation_matrix(
+    fund_ids: List[int],
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None
+):
+    """Get correlation matrix for multiple funds"""
+    data_store = DataStore()
+
+    funds_returns = {}
+
+    for fund_id in fund_ids:
+        fund = data_store.get_fund_by_id(fund_id)
+        if fund is None:
+            continue
+
+        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        if returns_df is None or len(returns_df) == 0:
+            continue
+
+        funds_returns[fund['fund_name']] = returns_df
+
+    if len(funds_returns) < 2:
+        return {
+            "correlation_matrix": {},
+            "fund_names": []
+        }
+
+    # Calculate correlation matrix
+    corr_matrix = RiskCalculator.calculate_correlation_matrix(funds_returns)
+
+    # Convert to dictionary format
+    correlation_data = {}
+    fund_names = list(corr_matrix.columns)
+
+    for fund1 in fund_names:
+        correlation_data[fund1] = {}
+        for fund2 in fund_names:
+            correlation_data[fund1][fund2] = float(corr_matrix.loc[fund1, fund2])
+
+    return {
+        "correlation_matrix": correlation_data,
+        "fund_names": fund_names
+    }

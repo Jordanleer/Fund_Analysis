@@ -234,3 +234,37 @@ class RiskCalculator:
         metrics.update(max_dd_metrics)
 
         return metrics
+
+    @staticmethod
+    def calculate_correlation_matrix(funds_returns: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+        """
+        Calculate correlation matrix for multiple funds
+
+        Args:
+            funds_returns: Dictionary mapping fund_id to returns DataFrame
+
+        Returns:
+            Correlation matrix as DataFrame
+        """
+        if len(funds_returns) < 2:
+            return pd.DataFrame()
+
+        # Align all returns by date
+        all_dates = set()
+        for returns_df in funds_returns.values():
+            all_dates.update(returns_df['date'].values)
+
+        all_dates = sorted(all_dates)
+
+        # Build a DataFrame with one column per fund
+        returns_matrix = pd.DataFrame()
+        for fund_name, returns_df in funds_returns.items():
+            returns_dict = {row['date']: row['monthly_return'] for _, row in returns_df.iterrows()}
+            returns_matrix[fund_name] = [returns_dict.get(date, np.nan) for date in all_dates]
+
+        returns_matrix.index = all_dates
+
+        # Calculate correlation matrix
+        correlation = returns_matrix.corr()
+
+        return correlation

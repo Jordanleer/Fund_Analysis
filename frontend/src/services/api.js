@@ -90,6 +90,16 @@ export const comparePerformance = async (fundIds, startDate = null, endDate = nu
   return response.data;
 };
 
+export const getRollingReturns = async (fundIds, windowMonths = 12, startDate = null, endDate = null) => {
+  const response = await api.post('/performance/rolling-returns', {
+    fund_ids: fundIds,
+    window_months: windowMonths,
+    start_date: startDate,
+    end_date: endDate
+  });
+  return response.data;
+};
+
 // Risk APIs
 export const getRiskMetrics = async (fundId, startDate = null, endDate = null, riskFreeRate = 0) => {
   const params = { risk_free_rate: riskFreeRate };
@@ -106,6 +116,15 @@ export const getDrawdownSeries = async (fundId, startDate = null, endDate = null
   if (endDate) params.end_date = endDate;
 
   const response = await api.get(`/risk/${fundId}/drawdown`, { params });
+  return response.data;
+};
+
+export const getCorrelationMatrix = async (fundIds, startDate = null, endDate = null) => {
+  const response = await api.post('/risk/correlation-matrix', {
+    fund_ids: fundIds,
+    start_date: startDate,
+    end_date: endDate
+  });
   return response.data;
 };
 

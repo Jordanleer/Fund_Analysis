@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import './TotalReturnChart.css';
 
-function TotalReturnChart({ data, title = 'Cumulative Returns', multiLine = false, lines = [] }) {
+function RollingReturnsChart({ data, windowMonths = 12, lines = [] }) {
   if (!data || data.length === 0) {
     return <div className="chart-no-data">No data available</div>;
   }
@@ -27,7 +27,7 @@ function TotalReturnChart({ data, title = 'Cumulative Returns', multiLine = fals
 
   return (
     <div className="chart-container">
-      <h3 className="chart-title">{title}</h3>
+      <h3 className="chart-title">{windowMonths}-Month Rolling Returns</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={data}
@@ -43,39 +43,28 @@ function TotalReturnChart({ data, title = 'Cumulative Returns', multiLine = fals
           />
           <YAxis
             tickFormatter={formatPercent}
-            label={{ value: 'Return (%)', angle: -90, position: 'insideLeft' }}
+            label={{ value: 'Annualized Return (%)', angle: -90, position: 'insideLeft' }}
           />
           <Tooltip
             formatter={formatPercent}
             labelFormatter={formatDate}
           />
           <Legend />
-          {multiLine && lines.length > 0 ? (
-            lines.map((line, index) => (
-              <Line
-                key={index}
-                type="monotone"
-                dataKey={line.dataKey}
-                stroke={line.color}
-                strokeWidth={2}
-                dot={false}
-                name={line.name}
-              />
-            ))
-          ) : (
+          {lines.map((line, index) => (
             <Line
+              key={index}
               type="monotone"
-              dataKey="cumulative_return"
-              stroke="#3498db"
+              dataKey={line.dataKey}
+              stroke={line.color}
               strokeWidth={2}
               dot={false}
-              name="Cumulative Return"
+              name={line.name}
             />
-          )}
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
 }
 
-export default TotalReturnChart;
+export default RollingReturnsChart;
