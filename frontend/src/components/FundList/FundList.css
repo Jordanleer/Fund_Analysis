@@ -1,0 +1,138 @@
+.fund-list-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.fund-list-header {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fund-list-header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.fund-count {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.search-button,
+.clear-search-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.search-button {
+  background: #3498db;
+  color: white;
+}
+
+.search-button:hover {
+  background: #2980b9;
+}
+
+.clear-search-button {
+  background: #ecf0f1;
+  color: #2c3e50;
+}
+
+.clear-search-button:hover {
+  background: #bdc3c7;
+}
+
+.funds-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.funds-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.funds-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.funds-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.funds-table tbody tr {
+  border-bottom: 1px solid #ecf0f1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.funds-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.funds-table td {
+  padding: 12px 15px;
+}
+
+.fund-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.rating {
+  font-size: 16px;
+}
+
+.view-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease;
+}
+
+.view-button:hover {
+  background: #2980b9;
+}
+
+.loading,
+.error,
+.no-results {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #7f8c8d;
+}
+
+.error {
+  color: #e74c3c;
+}
