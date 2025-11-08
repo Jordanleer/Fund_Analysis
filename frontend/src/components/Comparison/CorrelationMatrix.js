@@ -9,6 +9,7 @@ function CorrelationMatrix({ correlationData, fundNames }) {
   const getCorrelationColor = (value) => {
     // Returns a color based on correlation strength
     // 1.0 = dark green, 0.0 = white, -1.0 = dark red
+    if (value === null || value === undefined) return '#ecf0f1';
     if (value >= 0.8) return '#27ae60';
     if (value >= 0.6) return '#52be80';
     if (value >= 0.4) return '#85c1e2';
@@ -22,6 +23,7 @@ function CorrelationMatrix({ correlationData, fundNames }) {
 
   const getTextColor = (value) => {
     // Dark text for light backgrounds, light text for dark backgrounds
+    if (value === null || value === undefined) return '#7f8c8d';
     if (Math.abs(value) > 0.5) return 'white';
     return '#2c3e50';
   };
@@ -58,7 +60,7 @@ function CorrelationMatrix({ correlationData, fundNames }) {
                         color: getTextColor(value)
                       }}
                     >
-                      {value.toFixed(2)}
+                      {value !== null && value !== undefined ? value.toFixed(2) : 'N/A'}
                     </td>
                   );
                 })}

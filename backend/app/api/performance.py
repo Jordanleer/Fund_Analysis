@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional, List
 from pydantic import BaseModel
 import pandas as pd
+import numpy as np
 from app.storage import DataStore
 from app.api.dependencies import require_data
 from app.utils.calculations import PerformanceCalculator
@@ -235,9 +236,16 @@ async def get_rolling_returns(request: RollingReturnsRequest):
 
         rolling_list = []
         for _, row in rolling_df.iterrows():
+            value = row['rolling_return']
+            # Replace NaN/Inf with None for JSON serialization
+            if pd.isna(value) or np.isinf(value):
+                rolling_value = None
+            else:
+                rolling_value = float(value)
+
             rolling_list.append({
                 'date': row['date'].strftime('%Y-%m-%d'),
-                'rolling_return': float(row['rolling_return'])
+                'rolling_return': rolling_value
             })
 
         funds_rolling.append({
@@ -279,14 +287,19 @@ async def get_correlation_matrix(request: CorrelationRequest):
     # Calculate correlation matrix
     corr_matrix = RiskCalculator.calculate_correlation_matrix(funds_returns)
 
-    # Convert to dictionary format
+    # Convert to dictionary format, handling NaN values
     correlation_data = {}
     fund_names = list(corr_matrix.columns)
 
     for fund1 in fund_names:
         correlation_data[fund1] = {}
         for fund2 in fund_names:
-            correlation_data[fund1][fund2] = float(corr_matrix.loc[fund1, fund2])
+            value = corr_matrix.loc[fund1, fund2]
+            # Replace NaN/Inf with None for JSON serialization
+            if pd.isna(value) or np.isinf(value):
+                correlation_data[fund1][fund2] = None
+            else:
+                correlation_data[fund1][fund2] = float(value)
 
     return {
         "correlation_matrix": correlation_data,
