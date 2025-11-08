@@ -77,6 +77,12 @@ function FundDetailPage() {
             {'⭐'.repeat(parseInt(fund['Morningstar Rating Overall']))}
           </div>
         )}
+        <button
+          onClick={() => navigate(`/fund/${fundId}/performance`)}
+          className="performance-button"
+        >
+          📊 View Performance Analysis
+        </button>
       </div>
 
       <div className="fund-sections">

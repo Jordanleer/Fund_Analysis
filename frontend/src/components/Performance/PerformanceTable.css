@@ -1,0 +1,73 @@
+.performance-table-container {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.performance-table-container h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.performance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.performance-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.performance-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.performance-table tbody tr {
+  border-bottom: 1px solid #ecf0f1;
+  transition: background 0.2s ease;
+}
+
+.performance-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.performance-table td {
+  padding: 12px;
+}
+
+.period-label {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.return-value {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.return-value.positive {
+  color: #27ae60;
+}
+
+.return-value.negative {
+  color: #e74c3c;
+}
+
+.return-type {
+  color: #7f8c8d;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+}

@@ -1,0 +1,131 @@
+.calendar-year-container {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.calendar-year-container h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.year-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-card.best {
+  background: linear-gradient(135deg, #52c234 0%, #27ae60 100%);
+  color: white;
+}
+
+.stat-card.worst {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.calendar-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.calendar-table tbody tr {
+  border-bottom: 1px solid #ecf0f1;
+  transition: background 0.2s ease;
+}
+
+.calendar-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.calendar-table tbody tr.highlight-best {
+  background: #d5f4e6;
+}
+
+.calendar-table tbody tr.highlight-worst {
+  background: #fadbd8;
+}
+
+.calendar-table td {
+  padding: 12px;
+}
+
+.year-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.return-value {
+  font-weight: 600;
+  font-size: 16px;
+  position: relative;
+}
+
+.return-value.positive {
+  color: #27ae60;
+}
+
+.return-value.negative {
+  color: #e74c3c;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.best-badge {
+  background: #27ae60;
+  color: white;
+}
+
+.worst-badge {
+  background: #e74c3c;
+  color: white;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+}

@@ -47,4 +47,66 @@ export const compareFunds = async (fundIds) => {
   return response.data;
 };
 
+// Returns APIs
+export const getReturns = async (fundId, startDate = null, endDate = null) => {
+  const params = {};
+  if (startDate) params.start_date = startDate;
+  if (endDate) params.end_date = endDate;
+
+  const response = await api.get(`/returns/${fundId}`, { params });
+  return response.data;
+};
+
+export const getMultipleReturns = async (fundIds, startDate = null, endDate = null) => {
+  const response = await api.post('/returns/multiple', {
+    fund_ids: fundIds,
+    start_date: startDate,
+    end_date: endDate
+  });
+  return response.data;
+};
+
+// Performance APIs
+export const getPerformance = async (fundId, startDate = null, endDate = null) => {
+  const params = {};
+  if (startDate) params.start_date = startDate;
+  if (endDate) params.end_date = endDate;
+
+  const response = await api.get(`/performance/${fundId}`, { params });
+  return response.data;
+};
+
+export const getCalendarYearReturns = async (fundId) => {
+  const response = await api.get(`/performance/${fundId}/calendar-years`);
+  return response.data;
+};
+
+export const comparePerformance = async (fundIds, startDate = null, endDate = null) => {
+  const response = await api.post('/performance/compare', {
+    fund_ids: fundIds,
+    start_date: startDate,
+    end_date: endDate
+  });
+  return response.data;
+};
+
+// Risk APIs
+export const getRiskMetrics = async (fundId, startDate = null, endDate = null, riskFreeRate = 0) => {
+  const params = { risk_free_rate: riskFreeRate };
+  if (startDate) params.start_date = startDate;
+  if (endDate) params.end_date = endDate;
+
+  const response = await api.get(`/risk/${fundId}`, { params });
+  return response.data;
+};
+
+export const getDrawdownSeries = async (fundId, startDate = null, endDate = null) => {
+  const params = {};
+  if (startDate) params.start_date = startDate;
+  if (endDate) params.end_date = endDate;
+
+  const response = await api.get(`/risk/${fundId}/drawdown`, { params });
+  return response.data;
+};
+
 export default api;
