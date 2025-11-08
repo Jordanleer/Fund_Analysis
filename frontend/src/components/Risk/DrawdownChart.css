@@ -1,0 +1,57 @@
+.chart-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.chart-title {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.drawdown-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border-left: 4px solid #e74c3c;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.stat-value.negative {
+  color: #e74c3c;
+}
+
+.chart-no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: #7f8c8d;
+  font-size: 16px;
+  background: white;
+  border-radius: 8px;
+}
