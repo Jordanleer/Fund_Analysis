@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional, List
+from pydantic import BaseModel
 import pandas as pd
 from app.storage import DataStore
 from app.api.dependencies import require_data
@@ -7,6 +8,25 @@ from app.utils.calculations import PerformanceCalculator
 from app.utils.risk_calculations import RiskCalculator
 
 router = APIRouter()
+
+
+class CompareRequest(BaseModel):
+    fund_ids: List[int]
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+
+
+class RollingReturnsRequest(BaseModel):
+    fund_ids: List[int]
+    window_months: int = 12
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+
+
+class CorrelationRequest(BaseModel):
+    fund_ids: List[int]
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
 
 
 @router.get("/performance/{fund_id}", dependencies=[Depends(require_data)])
@@ -85,11 +105,7 @@ async def get_calendar_year_returns(fund_id: int):
 
 
 @router.post("/performance/compare", dependencies=[Depends(require_data)])
-async def compare_performance(
-    fund_ids: List[int],
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-):
+async def compare_performance(request: CompareRequest):
     """
     Compare performance of multiple funds
 
@@ -100,12 +116,12 @@ async def compare_performance(
 
     funds_performance = []
 
-    for fund_id in fund_ids:
+    for fund_id in request.fund_ids:
         fund = data_store.get_fund_by_id(fund_id)
         if fund is None:
             continue
 
-        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
         if returns_df is None or len(returns_df) == 0:
             continue
 
@@ -124,7 +140,7 @@ async def compare_performance(
 
     return {
         "funds": funds_performance,
-        "as_of_date": end_date if end_date else None
+        "as_of_date": request.end_date if request.end_date else None
     }
 
 
@@ -199,28 +215,23 @@ async def get_drawdown_series(
 
 
 @router.post("/performance/rolling-returns", dependencies=[Depends(require_data)])
-async def get_rolling_returns(
-    fund_ids: List[int],
-    window_months: int = 12,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-):
+async def get_rolling_returns(request: RollingReturnsRequest):
     """Get rolling returns for multiple funds"""
     data_store = DataStore()
 
     funds_rolling = []
 
-    for fund_id in fund_ids:
+    for fund_id in request.fund_ids:
         fund = data_store.get_fund_by_id(fund_id)
         if fund is None:
             continue
 
-        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
         if returns_df is None or len(returns_df) == 0:
             continue
 
         # Calculate rolling returns
-        rolling_df = PerformanceCalculator.calculate_rolling_returns(returns_df, window_months)
+        rolling_df = PerformanceCalculator.calculate_rolling_returns(returns_df, request.window_months)
 
         rolling_list = []
         for _, row in rolling_df.iterrows():
@@ -237,27 +248,23 @@ async def get_rolling_returns(
 
     return {
         "funds": funds_rolling,
-        "window_months": window_months
+        "window_months": request.window_months
     }
 
 
 @router.post("/risk/correlation-matrix", dependencies=[Depends(require_data)])
-async def get_correlation_matrix(
-    fund_ids: List[int],
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-):
+async def get_correlation_matrix(request: CorrelationRequest):
     """Get correlation matrix for multiple funds"""
     data_store = DataStore()
 
     funds_returns = {}
 
-    for fund_id in fund_ids:
+    for fund_id in request.fund_ids:
         fund = data_store.get_fund_by_id(fund_id)
         if fund is None:
             continue
 
-        returns_df = data_store.get_returns_by_fund_id(fund_id, start_date, end_date)
+        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
         if returns_df is None or len(returns_df) == 0:
             continue
 
