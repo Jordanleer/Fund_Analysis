@@ -20,6 +20,7 @@ function ComparePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null, preset: 'ALL' });
+  const [correlationPeriod, setCorrelationPeriod] = useState(36); // Default 36 months
 
   useEffect(() => {
     if (selectedFunds.length > 0) {
@@ -30,7 +31,7 @@ function ComparePage() {
       setRollingReturnsData(null);
       setCorrelationData(null);
     }
-  }, [selectedFunds, dateRange]);
+  }, [selectedFunds, dateRange, correlationPeriod]);
 
   const loadComparisonData = async () => {
     setLoading(true);
@@ -44,7 +45,7 @@ function ComparePage() {
         comparePerformance(fundIds, dateRange.startDate, dateRange.endDate),
         getMultipleReturns(fundIds, dateRange.startDate, dateRange.endDate),
         getRollingReturns(fundIds, 12, dateRange.startDate, dateRange.endDate),
-        getCorrelationMatrix(fundIds, dateRange.startDate, dateRange.endDate)
+        getCorrelationMatrix(fundIds, dateRange.startDate, dateRange.endDate, correlationPeriod)
       ]);
 
       setPerformanceData(perfData);
@@ -246,10 +247,35 @@ function ComparePage() {
 
             {/* Correlation Matrix */}
             {correlationData && correlationData.fund_names && correlationData.fund_names.length >= 2 && (
-              <CorrelationMatrix
-                correlationData={correlationData.correlation_matrix}
-                fundNames={correlationData.fund_names}
-              />
+              <div className="correlation-section">
+                <div className="correlation-period-selector">
+                  <label>Correlation Period:</label>
+                  <div className="period-buttons">
+                    <button
+                      className={`period-button ${correlationPeriod === 36 ? 'active' : ''}`}
+                      onClick={() => setCorrelationPeriod(36)}
+                    >
+                      36 Months
+                    </button>
+                    <button
+                      className={`period-button ${correlationPeriod === 60 ? 'active' : ''}`}
+                      onClick={() => setCorrelationPeriod(60)}
+                    >
+                      60 Months
+                    </button>
+                    <button
+                      className={`period-button ${correlationPeriod === 120 ? 'active' : ''}`}
+                      onClick={() => setCorrelationPeriod(120)}
+                    >
+                      120 Months
+                    </button>
+                  </div>
+                </div>
+                <CorrelationMatrix
+                  correlationData={correlationData.correlation_matrix}
+                  fundNames={correlationData.fund_names}
+                />
+              </div>
             )}
 
             {/* Performance Comparison Table */}

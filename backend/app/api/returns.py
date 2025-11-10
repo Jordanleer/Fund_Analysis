@@ -98,6 +98,11 @@ async def get_multiple_returns(request: MultipleReturnsRequest):
         cumulative_df = PerformanceCalculator.calculate_cumulative_returns_series(returns_df)
         result_df = returns_df.merge(cumulative_df, on='date').sort_values('date')
 
+        # Normalize cumulative returns to start at 0% for the selected period
+        if len(result_df) > 0:
+            first_cumulative = result_df.iloc[0]['cumulative_return']
+            result_df['cumulative_return'] = result_df['cumulative_return'] - first_cumulative
+
         returns_list = []
         for _, row in result_df.iterrows():
             returns_list.append({
