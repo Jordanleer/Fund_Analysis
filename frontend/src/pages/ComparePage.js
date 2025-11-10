@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { comparePerformance, getMultipleReturns, getRollingReturns, getCorrelationMatrix } from '../services/api';
 import FundSelector from '../components/Comparison/FundSelector';
+import DateRangePicker from '../components/DateRangePicker/DateRangePicker';
 import TotalReturnChart from '../components/Charts/TotalReturnChart';
 import RollingReturnsChart from '../components/Charts/RollingReturnsChart';
 import CorrelationMatrix from '../components/Comparison/CorrelationMatrix';
@@ -18,6 +19,7 @@ function ComparePage() {
   const [correlationData, setCorrelationData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null, preset: 'ALL' });
 
   useEffect(() => {
     if (selectedFunds.length > 0) {
@@ -28,7 +30,7 @@ function ComparePage() {
       setRollingReturnsData(null);
       setCorrelationData(null);
     }
-  }, [selectedFunds]);
+  }, [selectedFunds, dateRange]);
 
   const loadComparisonData = async () => {
     setLoading(true);
@@ -39,10 +41,10 @@ function ComparePage() {
 
       // Load performance comparison, returns data, rolling returns, and correlation
       const [perfData, returnsResp, rollingResp, corrResp] = await Promise.all([
-        comparePerformance(fundIds),
-        getMultipleReturns(fundIds),
-        getRollingReturns(fundIds, 12),
-        getCorrelationMatrix(fundIds)
+        comparePerformance(fundIds, dateRange.startDate, dateRange.endDate),
+        getMultipleReturns(fundIds, dateRange.startDate, dateRange.endDate),
+        getRollingReturns(fundIds, 12, dateRange.startDate, dateRange.endDate),
+        getCorrelationMatrix(fundIds, dateRange.startDate, dateRange.endDate)
       ]);
 
       setPerformanceData(perfData);
@@ -203,6 +205,13 @@ function ComparePage() {
           onSelectionChange={setSelectedFunds}
           maxFunds={10}
         />
+
+        {selectedFunds.length > 0 && (
+          <DateRangePicker
+            onDateRangeChange={setDateRange}
+            currentRange={dateRange}
+          />
+        )}
 
         {loading && (
           <div className="loading">Loading comparison data...</div>

@@ -276,6 +276,12 @@ async def get_correlation_matrix(request: CorrelationRequest):
         if returns_df is None or len(returns_df) == 0:
             continue
 
+        # If no date range specified, use last 3 years
+        if request.start_date is None and request.end_date is None:
+            latest_date = returns_df['date'].max()
+            three_years_ago = latest_date - pd.DateOffset(years=3)
+            returns_df = returns_df[returns_df['date'] >= three_years_ago]
+
         funds_returns[fund['fund_name']] = returns_df
 
     if len(funds_returns) < 2:
