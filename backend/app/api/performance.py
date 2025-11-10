@@ -263,7 +263,7 @@ async def get_rolling_returns(request: RollingReturnsRequest):
 
 @router.post("/risk/correlation-matrix", dependencies=[Depends(require_data)])
 async def get_correlation_matrix(request: CorrelationRequest):
-    """Get correlation matrix for multiple funds"""
+    """Get correlation matrix for multiple funds using monthly returns"""
     data_store = DataStore()
 
     funds_returns = {}
@@ -273,15 +273,16 @@ async def get_correlation_matrix(request: CorrelationRequest):
         if fund is None:
             continue
 
-        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
+        # Get all returns without date filtering first
+        returns_df = data_store.get_returns_by_fund_id(fund_id)
         if returns_df is None or len(returns_df) == 0:
             continue
 
-        # If no date range specified, use last N months based on request
-        if request.start_date is None and request.end_date is None:
-            latest_date = returns_df['date'].max()
-            months_ago = latest_date - pd.DateOffset(months=request.months)
-            returns_df = returns_df[returns_df['date'] >= months_ago]
+        # Always use the last N months based on the months parameter
+        # This ensures correlation period selector works independently of date range
+        latest_date = returns_df['date'].max()
+        months_ago = latest_date - pd.DateOffset(months=request.months)
+        returns_df = returns_df[returns_df['date'] >= months_ago]
 
         funds_returns[fund['fund_name']] = returns_df
 
@@ -291,7 +292,7 @@ async def get_correlation_matrix(request: CorrelationRequest):
             "fund_names": []
         }
 
-    # Calculate correlation matrix
+    # Calculate correlation matrix using monthly returns
     corr_matrix = RiskCalculator.calculate_correlation_matrix(funds_returns)
 
     # Convert to dictionary format, handling NaN values
