@@ -119,11 +119,12 @@ export const getDrawdownSeries = async (fundId, startDate = null, endDate = null
   return response.data;
 };
 
-export const getCorrelationMatrix = async (fundIds, startDate = null, endDate = null) => {
+export const getCorrelationMatrix = async (fundIds, startDate = null, endDate = null, months = 36) => {
   const response = await api.post('/risk/correlation-matrix', {
     fund_ids: fundIds,
     start_date: startDate,
-    end_date: endDate
+    end_date: endDate,
+    months: months
   });
   return response.data;
 };

@@ -28,6 +28,7 @@ class CorrelationRequest(BaseModel):
     fund_ids: List[int]
     start_date: Optional[str] = None
     end_date: Optional[str] = None
+    months: Optional[int] = 36  # Default to 36 months (3 years)
 
 
 @router.get("/performance/{fund_id}", dependencies=[Depends(require_data)])
@@ -276,11 +277,11 @@ async def get_correlation_matrix(request: CorrelationRequest):
         if returns_df is None or len(returns_df) == 0:
             continue
 
-        # If no date range specified, use last 3 years
+        # If no date range specified, use last N months based on request
         if request.start_date is None and request.end_date is None:
             latest_date = returns_df['date'].max()
-            three_years_ago = latest_date - pd.DateOffset(years=3)
-            returns_df = returns_df[returns_df['date'] >= three_years_ago]
+            months_ago = latest_date - pd.DateOffset(months=request.months)
+            returns_df = returns_df[returns_df['date'] >= months_ago]
 
         funds_returns[fund['fund_name']] = returns_df
 
