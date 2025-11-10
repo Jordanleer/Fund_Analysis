@@ -407,8 +407,8 @@ function ComparePage() {
                 {drawdownData && drawdownData.map((dd, idx) => (
                   <div key={idx} className="chart-container">
                     <DrawdownChart
-                      drawdownData={dd.drawdown_series}
-                      fundName={dd.fund_name}
+                      data={dd.drawdown_series}
+                      title={`${dd.fund_name} - Drawdown Over Time`}
                       maxDrawdown={riskData[idx]?.risk_metrics}
                     />
                   </div>
