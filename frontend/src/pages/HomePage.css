@@ -140,11 +140,21 @@
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.feature-card:hover {
+.feature-card.clickable {
+  cursor: pointer;
+}
+
+.feature-card.clickable:hover {
   transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.feature-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .feature-icon {

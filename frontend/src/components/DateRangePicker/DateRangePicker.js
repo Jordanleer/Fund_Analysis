@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getDataStatus } from '../../services/api';
 import './DateRangePicker.css';
 
 function DateRangePicker({ onDateRangeChange, currentRange }) {
@@ -6,6 +7,22 @@ function DateRangePicker({ onDateRangeChange, currentRange }) {
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [showCustom, setShowCustom] = useState(false);
+  const [dataEndDate, setDataEndDate] = useState(null);
+
+  useEffect(() => {
+    // Get the actual last date from the loaded data
+    const fetchDataStatus = async () => {
+      try {
+        const status = await getDataStatus();
+        if (status.status === 'data_loaded' && status.summary?.date_range?.end) {
+          setDataEndDate(status.summary.date_range.end);
+        }
+      } catch (error) {
+        console.error('Error fetching data status:', error);
+      }
+    };
+    fetchDataStatus();
+  }, []);
 
   const presets = [
     { value: 'ALL', label: 'All Time' },
@@ -24,30 +41,32 @@ function DateRangePicker({ onDateRangeChange, currentRange }) {
       setShowCustom(true);
     } else {
       setShowCustom(false);
-      const today = new Date();
+      // Use the last date from the data, not today's date
+      const endDateStr = dataEndDate || new Date().toISOString().split('T')[0];
+      const endDateObj = new Date(endDateStr);
       let startDate = null;
       let endDate = null;
 
       switch (preset) {
         case 'YTD':
-          startDate = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
-          endDate = today.toISOString().split('T')[0];
+          startDate = new Date(endDateObj.getFullYear(), 0, 1).toISOString().split('T')[0];
+          endDate = endDateStr;
           break;
         case '1Y':
-          startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()).toISOString().split('T')[0];
-          endDate = today.toISOString().split('T')[0];
+          startDate = new Date(endDateObj.getFullYear() - 1, endDateObj.getMonth(), endDateObj.getDate()).toISOString().split('T')[0];
+          endDate = endDateStr;
           break;
         case '3Y':
-          startDate = new Date(today.getFullYear() - 3, today.getMonth(), today.getDate()).toISOString().split('T')[0];
-          endDate = today.toISOString().split('T')[0];
+          startDate = new Date(endDateObj.getFullYear() - 3, endDateObj.getMonth(), endDateObj.getDate()).toISOString().split('T')[0];
+          endDate = endDateStr;
           break;
         case '5Y':
-          startDate = new Date(today.getFullYear() - 5, today.getMonth(), today.getDate()).toISOString().split('T')[0];
-          endDate = today.toISOString().split('T')[0];
+          startDate = new Date(endDateObj.getFullYear() - 5, endDateObj.getMonth(), endDateObj.getDate()).toISOString().split('T')[0];
+          endDate = endDateStr;
           break;
         case '10Y':
-          startDate = new Date(today.getFullYear() - 10, today.getMonth(), today.getDate()).toISOString().split('T')[0];
-          endDate = today.toISOString().split('T')[0];
+          startDate = new Date(endDateObj.getFullYear() - 10, endDateObj.getMonth(), endDateObj.getDate()).toISOString().split('T')[0];
+          endDate = endDateStr;
           break;
         case 'ALL':
         default:

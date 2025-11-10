@@ -100,17 +100,26 @@ function HomePage() {
       <div className="features-section">
         <h3>Features</h3>
         <div className="features-grid">
-          <div className="feature-card">
+          <div
+            className={`feature-card ${dataLoaded ? 'clickable' : 'disabled'}`}
+            onClick={dataLoaded ? handleViewFunds : undefined}
+          >
             <div className="feature-icon">📊</div>
             <h4>Fund Analysis</h4>
             <p>View detailed fund information and performance metrics</p>
           </div>
-          <div className="feature-card">
+          <div
+            className={`feature-card ${dataLoaded ? 'clickable' : 'disabled'}`}
+            onClick={dataLoaded ? handleViewFunds : undefined}
+          >
             <div className="feature-icon">🔍</div>
             <h4>Search & Filter</h4>
             <p>Find funds by name, category, or sector</p>
           </div>
-          <div className="feature-card">
+          <div
+            className={`feature-card ${dataLoaded ? 'clickable' : 'disabled'}`}
+            onClick={dataLoaded ? handleCompareFunds : undefined}
+          >
             <div className="feature-icon">📈</div>
             <h4>Compare Funds</h4>
             <p>Side-by-side comparison of multiple funds</p>
