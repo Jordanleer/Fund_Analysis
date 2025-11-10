@@ -273,16 +273,16 @@ async def get_correlation_matrix(request: CorrelationRequest):
         if fund is None:
             continue
 
-        # Get all returns without date filtering first
-        returns_df = data_store.get_returns_by_fund_id(fund_id)
+        # Get returns using the same date range as performance calculations
+        returns_df = data_store.get_returns_by_fund_id(fund_id, request.start_date, request.end_date)
         if returns_df is None or len(returns_df) == 0:
             continue
 
-        # Always use the last N months based on the months parameter
-        # This ensures correlation period selector works independently of date range
-        latest_date = returns_df['date'].max()
-        months_ago = latest_date - pd.DateOffset(months=request.months)
-        returns_df = returns_df[returns_df['date'] >= months_ago]
+        # If months parameter is provided and no explicit date range, use last N months
+        if request.start_date is None and request.end_date is None and request.months:
+            latest_date = returns_df['date'].max()
+            months_ago = latest_date - pd.DateOffset(months=request.months)
+            returns_df = returns_df[returns_df['date'] >= months_ago]
 
         funds_returns[fund['fund_name']] = returns_df
 
